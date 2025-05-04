@@ -1,0 +1,17 @@
+# Ignore virtual environments
+myenv/
+
+# Ignore model weights
+*.pt
+
+# Ignore common video and image files
+*.avi
+*.mp4
+*.jpg
+
+# Ignore folders
+train/
+training/
+
+# Only allow this specific folder to be tracked (everything else ignored if using whitelist approach)
+# !yolov5-coco-datasets/
