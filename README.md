@@ -1,108 +1,135 @@
-<<<<<<< HEAD
-# Person-tracking-drone-simulator
-=======
-# Person Tracking Project
+Person-Tracking Drone Simulator
 
-## Introduction
-This project focuses on tracking people in video frames using the YOLOv8 object detection model. The code provides three main components: exploratory data analysis (EDA) on the COCO 2017 dataset, training the YOLOv8 model on the filtered dataset, and then using the trained model to track people in a video.
+🚀 Introduction
+This project simulates a drone capable of detecting and tracking people in real time using a YOLOv8 model and OpenCV, integrated with DroneKit and ArduPilot SITL. The system uses computer vision to calculate a person's position and adjusts the drone's flight path accordingly. It's ideal for experimenting with AI-powered autonomous drone applications.
 
-## Features
-- Performed EDA on the COCO 2017 dataset to filter for the 'person' class.
-- Trained YOLOv8 models (yolov8n, yolov8s, yolov8m) on the filtered COCO 2017 dataset.
-- Implemented video tracking using the trained YOLOv8 models to detect and track people in a video.
-- Saved the tracked video with bounding boxes and unique IDs for each person.
-- Reported the total number of people detected in the video.
+🎯 Objectives
+Train a custom YOLOv8 model on the COCO dataset for person detection.
 
-## Prerequisites
-- Python 3.x
-- Ultralytics YOLO library
-- FiftyOne library
-- OpenCV library
-- Matplotlib library
+Simulate a drone using ArduPilot SITL and control it via DroneKit.
 
-## Installation
-1. Clone the repository:
-```
-git clone https://github.com/your-username/person-tracking.git
-```
-2. Navigate to the project directory:
-```
-cd person-tracking
-```
-3. Install the required dependencies:
-```
+Use OpenCV and YOLO to detect a person through a webcam feed.
+
+Command the drone to follow the person based on bounding box midpoints.
+
+🔧 Technologies Used
+DroneKit-Python
+
+ArduPilot SITL (Software-In-The-Loop)
+
+MAVProxy
+
+Mission Planner (for optional visualization)
+
+YOLOv8 (ultralytics)
+
+OpenCV
+
+Python 3.8+
+
+📁 Project Structure
+plaintext
+Copy
+├── eda.py                  # Filter COCO dataset for 'person' class
+├── train.py                # Train YOLOv8 on filtered dataset
+├── track.py                # Track people in video using trained model
+├── tracking.py             # Real-time person tracking + Drone movement
+├── yolov5-coco-datasets/   # Exported YOLO dataset
+├── training/               # Trained model weights
+├── requirements.txt
+└── README.md
+✅ Features
+Real-time webcam input for detection and tracking
+
+Circle or person-based visual tracking via OpenCV
+
+Integration with simulated drone via DroneKit
+
+Precision commands sent based on detection location
+
+Preprocessing of COCO dataset for faster training
+
+Model support: YOLOv8n (custom-trained)
+
+📦 Installation
+Clone the repository:
+
+bash
+Copy
+git clone https://github.com/anjumnnit/Person-tracking-drone-simulator.git
+cd Person-tracking-drone-simulator
+Set up Python environment:
+
+bash
+Copy
+python -m venv myenv
+source myenv/bin/activate  # On Windows: myenv\Scripts\activate
 pip install -r requirements.txt
-```
+Install and run DroneKit-SITL:
 
-## Exploratory Data Analysis
-Before training the YOLOv8 models, we performed an exploratory data analysis (EDA) on the COCO 2017 dataset to prepare the data for training.
+bash
+Copy
+pip install dronekit-sitl
+dronekit-sitl copter
+(Optional) Launch MAVProxy:
 
-1. Loaded the COCO 2017 dataset using the FiftyOne library, focusing on the 'person' class.
-2. Filtered the dataset to only include samples with 'person' detections in the ground truth.
-3. Exported the filtered dataset in the YOLOv5 format, with the 'person' class as the only label, to the `./yolov5-coco-datasets` directory.
+bash
+Copy
+mavproxy.py --master tcp:127.0.0.1:5760 --console --map
+Connect with Mission Planner (TCP port: 5760) for visual control if desired.
 
-This process ensured that the training, validation, and test splits of the dataset only contained samples with 'person' detections, which was the focus of our person-tracking project.
+📊 Exploratory Data Analysis (EDA)
+To filter the COCO 2017 dataset for the 'person' class and convert it to YOLO format:
 
-### Sample Data
-
-![image](https://github.com/insomnius/person-detection/assets/20650401/366d8415-0cf0-4e2c-bfbb-05c611e4ec5a)
-
-![image](https://github.com/insomnius/person-detection/assets/20650401/fa1a7b04-3cb1-40c1-86eb-2d0c1e3fc27d)
-
-![image](https://github.com/insomnius/person-detection/assets/20650401/d62f425f-ec3d-424d-ae32-09b1d254cddc)
-
-## Usage
-1. Run the EDA code:
-```
+bash
+Copy
 python eda.py
-```
-This will load the COCO 2017 dataset, filter it for the 'person' class, and export the dataset in the YOLOv5 format.
+This will export only person-related annotations to yolov5-coco-datasets/.
 
-2. Run the training code:
-```
+🏋️‍♂️ Model Training
+To train YOLOv8 on the custom dataset:
+
+bash
+Copy
 python train.py
-```
-This will train the YOLOv8 models on the filtered COCO 2017 dataset and save the trained weights in the `./training/` directory.
+The trained model will be saved in the training/ directory (e.g., yolov8n.pt).
 
-3. Run the tracking code:
-```
-python track.py
-```
-This will use the trained YOLOv8 model to detect and track people in the provided video, saving the output video in the current directory.
+🎯 Real-Time Person Tracking with Drone Control
+Use this to open webcam, detect person, and send MAVLink commands to the simulated drone:
 
-## Results
+bash
+Copy
+python tracking.py
+The drone will take off and attempt to follow the largest detected person using bounding box midpoint navigation logic.
 
-The trained YOLOv8 models achieved the following mean average precisions (mAP) on the COCO 2017 validation set:
-- yolov8n: `0.61287`
-- yolov8s: `0.56026`
-- yolov8m: `0.59617`
+📽️ Output Example
+Output video shows bounding boxes with tracking info.
 
-### Detection
+Terminal displays drone attitude and command logs.
 
-![image](https://github.com/insomnius/person-detection/assets/20650401/42914af4-b2c8-4de9-867d-fbf7b8b438d5)
+Person movement results in drone motion simulation.
 
-### Tracking
+📈 Model Performance
+YOLOv8 trained on the filtered COCO dataset showed:
 
-The tracking code was able to detect and track number of people in the provided video.
+yolov8n - mAP: 0.61287
 
-<details open="" class="details-reset border rounded-2">
-  <video src="https://github.com/insomnius/person-detection/assets/20650401/00f50d3a-13a8-4fdb-a4e1-f6cd5194224f" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
-  </video>
-</details>
+yolov8s - mAP: 0.56026
 
-<br>
+yolov8m - mAP: 0.59617
 
-<details open="" class="details-reset border rounded-2">
-  <video src="https://github.com/insomnius/person-detection/assets/20650401/7f7ad14d-3566-4503-949a-784cf1b7ef49" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
-  </video>
-</details>
+🛠️ Future Improvements
+Add Kalman Filter or Deep SORT for better tracking.
 
-## Future Improvements
-- Integrate more advanced tracking algorithms to improve the accuracy and robustness of the person tracking.
-- Explore the use of other object detection models, such as YOLOv5 or Faster R-CNN, and compare their performance.
-- Implement real-time person tracking on live video streams.
-- Explore the integration of the person tracking system with other applications, such as people counting or activity recognition.
+Deploy on a real drone using Raspberry Pi + Pixhawk.
 
-## License
-This project is licensed under the [MIT License](LICENSE).
->>>>>>> c6b1148 (Initial commit)
+Add precision landing using circle detection (ArUco/AprilTag).
+
+Improve drone navigation logic (e.g., PID controller).
+
+Expand to multiple-person tracking.
+
+📜 License
+This project is licensed under the MIT License.
+
+Would you like me to generate a .gitignore file now to clean up your repo before final push?
